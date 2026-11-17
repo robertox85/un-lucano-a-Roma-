@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>UN LUCANO A ROMA (1986)</title>
+    <style>
+        :root {
+            --bg-dark: #060714;
+            --bg-panel: #10132e;
+            --bg-card: #181d45;
+            --cyan: #00f5d4;
+            --magenta: #ff2a85;
+            --yellow: #ffd166;
+            --orange: #e86f3a;
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100dvh;
+            overflow: hidden;
+            background-color: #020308;
+            color: var(--white);
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+        }
+
+        /* Cabinato Arcade Mobile-First */
+        .arcade-cabinet {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
+            height: 100dvh;
+            margin: 0 auto;
+            background-color: var(--bg-dark);
+            border-left: 3px solid #262c66;
+            border-right: 3px solid #262c66;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 0 35px rgba(0, 245, 212, 0.16);
+        }
+
+        @media (max-width: 480px) {
+            .arcade-cabinet {
+                border-left: none;
+                border-right: none;
+            }
+        }
+
+        /* Overlay decorativi rigorosamente non-bloccanti */
+        .crt-overlay {
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent 0px,
+                transparent 2px,
+                rgba(0, 0, 0, 0.25) 3px,
+                rgba(0, 0, 0, 0.25) 4px
+            );
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .crt-vignette {
+            position: absolute;
+            inset: 0;
+            box-shadow: inset 0 0 36px rgba(0, 0, 0, 0.65);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Contenitori interattivi sopra gli effetti CRT */
+        .interactive-layer {
+            position: relative;
+            z-index: 20;
+            touch-action: manipulation;
+        }
+
+        .btn-arcade {
+            position: relative;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            min-height: 50px;
+            padding: 12px 14px;
+            border: 3px solid var(--white);
+            border-radius: 12px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 900;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            touch-action: manipulation;
+            box-shadow: 0 4px 0 #000000, inset 0 -3px 0 rgba(0, 0, 0, 0.3);
+            transition: transform 0.05s ease;
+        }
+
+        .btn-arcade:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #000000;
+        }
+
+        .btn-magenta { background: var(--magenta); color: var(--white); }
+        .btn-cyan { background: var(--cyan); color: #060714; }
+        .btn-yellow { background: var(--yellow); color: #060714; }
+        .btn-dark { background: var(--bg-card); color: var(--yellow); }
+
+        .btn-mini {
+            position: relative;
+            z-index: 20;
+            min-height: 32px;
+            padding: 4px 8px;
+            border: 2px solid var(--cyan);
+            border-radius: 8px;
+            background: var(--bg-card);
+            color: var(--cyan);
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 900;
+            font-size: 11px;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        /* Header Arcade */
+        .hud-header {
+            position: relative;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            background: #04050e;
+            border-bottom: 2px solid var(--cyan);
+            font-size: 11px;
+            line-height: 1.25;
+            flex-shrink: 0;
+        }
+
+        .hud-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Schermate */
+        .screen {
+            position: relative;
+            z-index: 20;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Animazioni */
+        @keyframes pulseBlink {
+            0%, 49% { opacity: 1; transform: scale(1); }
+            50%, 100% { opacity: 0.35; transform: scale(0.98); }
+        }
+        .blink-cta {
+            animation: pulseBlink 1s infinite;
+        }
+
+        /* Schermata 1: Attract Mode */
+        .attract-screen {
+            padding: 12px;
+            background: linear-gradient(180deg, #0b0e2b 0%, #1d1042 55%, #060714 100%);
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        .badge-1986 {
+            display: inline-block;
+            padding: 4px 10px;
+            border: 2px solid var(--magenta);
+            border-radius: 8px;
+            background: var(--bg-panel);
+            color: var(--cyan);
+            font-size: 11px;
+            margin-bottom: 6px;
+        }
+
+        .game-title {
+            font-size: 24px;
+            line-height: 1.1;
+            color: var(--yellow);
+            text-shadow: 0 3px 0 #000, 2px 2px 0 var(--magenta);
+        }
+
+        .canvas-box {
+            position: relative;
+            width: 100%;
+            border: 3px solid var(--cyan);
+            border-radius: 12px;
+            background: #120d33;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Schermata 2: Sigla */
+        .intro-screen {
+            padding: 12px;
+            background: linear-gradient(180deg, #1b0e3d 0%, #2d1457 50%, #060714 100%);
+        }
+
+        .tv-card {
+            background: var(--bg-panel);
+            border: 3px solid var(--yellow);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        /* Schermata 3: Gameplay */
+        .game-top-bar {
+            padding: 6px 8px;
+            background: var(--bg-panel);
+            border-bottom: 2px solid #2b3275;
+            flex-shrink: 0;
+        }
+
+        .ep-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--yellow);
+            margin-bottom: 5px;
+        }
+
+        .phrase-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 4px;
+        }
+
+        .phrase-tile {
+            min-height: 26px;
+            padding: 2px 3px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: #090b1f;
+            color: rgba(255, 255, 255, 0.35);
+            font-size: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1.05;
+            word-break: break-word;
+        }
+
+        .phrase-tile.unlocked {
+            background: var(--yellow);
+            color: #060714;
+            border-color: var(--white);
+        }
+
+        .phrase-tile.active {
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+
+        .stage-viewport {
+            position: relative;
+            height: 50%;
+            width: 100%;
+            border-bottom: 3px solid var(--cyan);
+            background: #13173d;
+            flex-shrink: 0;
+        }
+
+        .dialog-area {
+            flex: 1;
+            padding: 10px;
+            background: var(--bg-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+
+        .dialog-frame {
+            flex: 1;
+            background: var(--bg-panel);
+            border: 3px solid var(--white);
+            border-radius: 12px;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        .speaker-pill {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            background: var(--yellow);
+            color: #000;
+        }
+
+        .dialog-text {
+            font-size: 15px;
+            line-height: 1.3;
+            color: var(--white);
+            margin: 6px 0;
+        }
+
+        .actions-stack {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .quiz-stack {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 6px;
+        }
+
+        .btn-quiz {
+            min-height: 40px;
+            padding: 8px 10px;
+            font-size: 12px;
+            justify-content: flex-start;
+            text-align: left;
+            text-transform: none;
+        }
+
+        /* Schermata 4: Gran Finale */
+        .finale-screen {
+            padding: 12px;
+            background: linear-gradient(180deg, #281042 0%, #120926 100%);
+        }
+
+        .freeze-banner {
+            background: rgba(6, 7, 20, 0.94);
+            border: 3px solid var(--yellow);
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        @keyframes rollCredits {
+            0% { transform: translateY(100%); }
+            100% { transform: translateY(-105%); }
+        }
+        .credits-roller {
+            position: absolute;
+            inset-x: 0;
+            bottom: 0;
+            height: 95px;
+            overflow: hidden;
+            pointer-events: none;
+            text-align: center;
+        }
+        .credits-text {
+            color: var(--yellow);
+            font-style: italic;
+            font-size: 12px;
+            line-height: 1.45;
+            text-shadow: 2px 2px 0 #000, -1px -1px 0 #000;
+            animation: rollCredits 10s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="arcade-cabinet" id="arcadeCabinet">
+        <!-- Effetti visivi CRT (rigorosamente non-bloccanti) -->
+        <div class="crt-overlay"></div>
+        <div class="crt-vignette"></div>
+
+        <!-- BARRA SUPERIORE ARCADE -->
+        <header class="hud-header interactive-layer">
+            <div>
+                <div style="color: var(--magenta);">1UP <span id="hudScore">00000</span></div>
+                <div style="color: var(--yellow);">HI-SCORE 19860</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="color: var(--cyan);" id="hudCredit">CREDIT 01</div>
+                <div style="font-size: 10px; color: #cbd5e1;" id="hudStage">ROMA '86</div>
+            </div>
+            <div class="hud-controls">
+                <label for="wavUploadInput" class="btn-mini" style="border-color: var(--yellow); color: var(--yellow);" title="Carica MP3/WAV sigla">
+                    <span id="wavBadge">MP3/WAV</span>
+                </label>
+                <input type="file" id="wavUploadInput" accept="audio/*" class="hidden">
+                <button type="button" id="btnMute" class="btn-mini" onclick="window.app.toggleMute()">AUDIO</button>
+            </div>
+        </header>
+
+        <!-- ===============================================================
+             SCHERMATA 1: ATTRACT MODE / INSERT COIN
+        ================================================================ -->
+        <section id="screenAttract" class="screen attract-screen interactive-layer" onclick="window.app.startFromAttract()">
+            <div style="text-align: center;">
+                <div class="badge-1986">★ SITCOM ARCADE • 1986 EDITION ★</div>
+                <h1 class="game-title">UN LUCANO A ROMA</h1>
+                <div style="font-size: 11px; color: var(--cyan); margin-top: 4px;">DA PATERNÒ ALLA SAPIENZA</div>
+            </div>
+
+            <div class="canvas-box" style="height: 48%; margin: 8px 0;">
+                <canvas id="canvasAttract"></canvas>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <div style="text-align: center; font-size: 11px; color: var(--yellow);">
+                    1 PLAYER • TOCCA OVUNQUE PER INIZIARE
+                </div>
+                <button type="button" id="btnInsertCoin" class="btn-arcade btn-magenta blink-cta" onclick="event.stopPropagation(); window.app.startFromAttract()">
+                    🪙 INSERT COIN / TAP TO PLAY
+                </button>
+            </div>
+        </section>
+
+        <!-- ===============================================================
+             SCHERMATA 2: SIGLA DI APERTURA (TITOLI DI TESTA SITCOM)
+        ================================================================ -->
+        <section id="screenIntro" class="screen intro-screen interactive-layer hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 11px; color: var(--yellow);">♪ SIGLA TV ANNI '80</span>
+                <span id="introSlideIndicator" style="font-size: 11px; color: var(--cyan);">1 / 3</span>
+            </div>
+
+            <div class="canvas-box" style="height: 46%; margin: 8px 0; border-color: var(--yellow);">
+                <canvas id="canvasIntro"></canvas>
+            </div>
+
+            <div class="tv-card">
+                <div id="introSubtitle" style="font-size: 11px; color: var(--magenta); margin-bottom: 6px;">
+                    UNA PRODUZIONE TELE-LUCANIA '86
+                </div>
+                <div id="introHeadline" style="font-size: 15px; line-height: 1.35; color: var(--yellow);">
+                    CON CARLO DA PATERNÒ... NELLA GIUNGLA DI ROMA!
+                </div>
+            </div>
+
+            <button type="button" id="btnSkipIntro" class="btn-arcade btn-cyan" onclick="window.app.finishIntro()">
+                SALTA SIGLA &gt;&gt;
+            </button>
+        </section>
+
+        <!-- ===============================================================
+             SCHERMATA 3: GAMEPLAY LINEARE (SCENETTA -> AZIONI -> ENIGMA)
+        ================================================================ -->
+        <section id="screenGame" class="screen interactive-layer hidden">
+            <!-- Barra superiore compatta con le 6 tessere frase -->
+            <div class="game-top-bar">
+                <div class="ep-meta">
+                    <span id="epTitleLabel">EP. 1/6 • STAZIONE TERMINI</span>
+                    <span id="epWordsCount">PAROLE: 0/6</span>
+                </div>
+                <div class="phrase-grid" id="phraseGrid"></div>
+            </div>
+
+            <!-- Stage Canvas (50-55% altezza) -->
+            <div class="stage-viewport">
+                <canvas id="canvasStage"></canvas>
+            </div>
+
+            <!-- Area Dialogo / Azioni / Mini-Enigma -->
+            <div class="dialog-area">
+                <!-- FASE A & C: Box Dialogo Lineare -->
+                <div id="boxDialog" class="dialog-frame" onclick="window.app.advanceDialog()">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span id="speakerBadge" class="speaker-pill">IL TASSISTA</span>
+                            <span id="beatStepBadge" style="font-size: 10px; color: var(--cyan);">1/3</span>
+                        </div>
+                        <p id="dialogText" class="dialog-text">...</p>
+                    </div>
+                    <button type="button" id="btnDialogNext" class="btn-arcade btn-yellow" style="min-height: 42px; padding: 8px;" onclick="event.stopPropagation(); window.app.advanceDialog()">
+                        AVANTI ▶
+                    </button>
+                </div>
+
+                <!-- FASE B: Scelta Azione (Appare SOLO a scenetta terminata) -->
+                <div id="boxActions" class="actions-stack hidden">
+                    <div style="text-align: center; font-size: 11px; color: var(--cyan);">
+                        COME VUOI FARTI CAPIRE?
+                    </div>
+                    <button type="button" id="btnDialect" class="btn-arcade btn-magenta" onclick="window.app.chooseDialect()">
+                        🗣️ PARLA IN DIALETTO
+                    </button>
+                    <button type="button" id="btnWit" class="btn-arcade btn-cyan" onclick="window.app.chooseWit()">
+                        🧠 USA L'INGEGNO
+                    </button>
+                </div>
+
+                <!-- MINI-ENIGMA RAPIDO A 3 OPZIONI -->
+                <div id="boxQuiz" class="quiz-stack hidden">
+                    <div style="font-size: 12px; color: var(--yellow); line-height: 1.25;" id="quizPrompt">
+                        Domanda...
+                    </div>
+                    <div id="quizOptions" style="display: flex; flex-direction: column; gap: 6px;"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================================================
+             SCHERMATA 4: GRAN FINALE SITCOM ANNI '80
+        ================================================================ -->
+        <section id="screenFinale" class="screen finale-screen interactive-layer hidden">
+            <div class="freeze-banner">
+                <div style="font-size: 10px; color: var(--cyan); margin-bottom: 4px;">
+                    ★ FRASI COMPLETATA AL 100% ★
+                </div>
+                <div style="font-size: 14px; line-height: 1.3; color: var(--yellow);">
+                    «Ciao sono Carlo, vengo da Paternò, vuoi essere mio amico?»
+                </div>
+            </div>
+
+            <div class="canvas-box" style="flex: 1; margin: 10px 0; border-color: var(--yellow); filter: sepia(0.28) contrast(1.15);">
+                <canvas id="canvasFinale"></canvas>
+                <div class="credits-roller">
+                    <div class="credits-text">
+                        FERMO IMMAGINE FINALE • BAR MARANI<br>
+                        PROTAGONISTA: CARLO DA PATERNÒ (PZ)<br>
+                        FACOLTÀ DI PSICOLOGIA • LA SAPIENZA<br>
+                        NUOVI AMICI ROMANI CONQUISTATI!<br>
+                        UN LUCANO A ROMA © 1986
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" id="btnPlayAgain" class="btn-arcade btn-yellow" onclick="window.app.resetGame()">
+                🔄 GIOCA ANCORA
+            </button>
+        </section>
+    </div>
+
+    <!-- Player audio principale con sigla GitHub precaricata -->
+    <audio id="localAudioEl" src="https://raw.githubusercontent.com/robertox85/un-lucano-a-Roma-/ab1d847842d9debeaaa8fc8c33c8763835595b9f/Threes%20Company%20Theme%20(From%20Threes%20Company).mp3" preload="auto" loop></audio>
+
+    <script>
+        (function () {
+            "use strict";
+
+            /* =================================================================
+               1. DATI EPISODI & FRASE DA COMPLETARE (6 FRAMMENTI)
+            ================================================================= */
+            const PHRASE_PARTS = [
+                "ciao",
+                "sono Carlo,",
+                "vengo da",
+                "Paternò,",
+                "vuoi essere",
+                "mio amico?"
+            ];
+
+            const EPISODES = [
+                {
+                    title: "EP. 1/6 • STAZIONE TERMINI",
+                    speaker: "TASSISTA ROMANO",
+                    beats: [
+                        { who: "CARLO", text: "«Uè cumpà! Addò stong'? Me serv' nu passaggio pe' l'Università!»" },
+                        { who: "TASSISTA ROMANO", text: "«A ragà, ma che lingua parli? Ostrogoto antico?!»" },
+                        { who: "VOCE SITCOM", text: "Carlo ha appena messo piede a Roma. Nessuno capisce il dialetto di Paternò!" }
+                    ],
+                    dialectReply: "«O' zì, nun me guardà accussì! Tengo a valigia pesante!» (Il tassista scuote la testa e fa retromarcia!)",
+                    quiz: {
+                        prompt: "Usa la psicologia del gesto! Come saluti in modo universale?",
+                        options: [
+                            { text: "Sorridi, agiti la mano aperta e dici: «CIAO»", correct: true },
+                            { text: "Gesticoli indicando la valigia di cartone", correct: false },
+                            { text: "Tiri fuori una soppressata lucana", correct: false }
+                        ]
+                    },
+                    winText: "Perfetto! Il tassista sorride: «Aaaah, CIAO pure a te!»"
+                },
+                {
+                    title: "EP. 2/6 • SEGRETERIA SAPIENZA",
+                    speaker: "SEGRETARIA",
+                    beats: [
+                        { who: "SEGRETARIA", text: "«Avanti il prossimo! Nome e cognome per il libretto di Psicologia!»" },
+                        { who: "CARLO", text: "«I' me chiam' Carl', figl' d' Don Peppin'!»" },
+                        { who: "SEGRETARIA", text: "«Eh?! Qui se non ti presenti bene non ti timbro nulla!»" }
+                    ],
+                    dialectReply: "«Signò, ten' o' timbr' o no?!» (La segretaria si sistema gli occhialoni rosa perplessa!)",
+                    quiz: {
+                        prompt: "Come ti presenti indicando il tuo tesserino universitario?",
+                        options: [
+                            { text: "Indichi la foto e scandisci: «SONO CARLO,»", correct: true },
+                            { text: "Reciti l'albero genealogico di Paternò", correct: false },
+                            { text: "Disegni un cervello sul modulo", correct: false }
+                        ]
+                    },
+                    winText: "Timbro messo! «Benvenuto in Psicologia, SONO CARLO!»"
+                },
+                {
+                    title: "EP. 3/6 • FERMATA ATAC 492",
+                    speaker: "CONTROLLORE ATAC",
+                    beats: [
+                        { who: "CONTROLLORE ATAC", text: "«Biglietti prego! Da dove spunti con quella valigia legata con lo spago?»" },
+                        { who: "CARLO", text: "«Scinn' da' muntagn', o' pais' mi' è luntan' assaje!»" },
+                        { who: "CONTROLLORE ATAC", text: "«Senti bello, parla come magni sennò scendi al capolinea!»" }
+                    ],
+                    dialectReply: "«Mamma mia che traffico a sta Roma!» (Il controllore si gratta il cappello confuso!)",
+                    quiz: {
+                        prompt: "Mostra il biglietto ferroviario delle Ferrovie dello Stato per spiegare la provenienza:",
+                        options: [
+                            { text: "Indichi la freccia di partenza: «VENGO DA»", correct: true },
+                            { text: "Fai il verso del treno a vapore", correct: false },
+                            { text: "Chiedi dov'è il Colosseo in dialetto", correct: false }
+                        ]
+                    },
+                    winText: "Il controllore annuisce: «Capito! VENGO DA fuori porta!»"
+                },
+                {
+                    title: "EP. 4/6 • AULA MAGNA",
+                    speaker: "PROF. ROSSI",
+                    beats: [
+                        { who: "PROF. ROSSI", text: "«Matricola! Ci dica da quale località proviene prima di iniziare la lezione.»" },
+                        { who: "CARLO", text: "«Professò, da' Lucania! Nu pais' bell' n'copp' o' colle!»" },
+                        { who: "PROF. ROSSI", text: "«Interessante caso linguistico... ma ci dica il nome esatto del paese!»" }
+                    ],
+                    dialectReply: "«Stà n'Basilicata, addò se magn' bbuon!» (L'intera Aula Magna scoppia a ridere!)",
+                    quiz: {
+                        prompt: "Punta il dito sulla cartina d'Italia alla lavagna tra Potenza e la Val d'Agri:",
+                        options: [
+                            { text: "Indichi la Basilicata e pronunci: «PATERNÒ,»", correct: true },
+                            { text: "Indichi la Sicilia pensando all'Etna", correct: false },
+                            { text: "Scrivi una formula di Freud alla lavagna", correct: false }
+                        ]
+                    },
+                    winText: "Applauso dell'aula! «Ottimo, da PATERNÒ in Lucania!»"
+                },
+                {
+                    title: "EP. 5/6 • BIBLIOTECA SAN LORENZO",
+                    speaker: "STUDENTESSA",
+                    beats: [
+                        { who: "CARLO", text: "«Uè guagliò, me mprest' nu poco a' penna ca aggia appunta'?»" },
+                        { who: "STUDENTESSA", text: "«Scusa, ho le cuffie del Walkman... che hai detto?!»" },
+                        { who: "VOCE SITCOM", text: "È l'occasione giusta per rompere il ghiaccio e fare conoscenza!" }
+                    ],
+                    dialectReply: "«A' penna! Pe' scrive!» (Lei alza il volume del Walkman e si sposta di banco!)",
+                    quiz: {
+                        prompt: "Le porgi una cassetta vergine TDK per fare amicizia. Cosa le chiedi?",
+                        options: [
+                            { text: "Con un sorriso sincero chiedi: «VUOI ESSERE»", correct: true },
+                            { text: "Le canti una tarantella lucana a cappella", correct: false },
+                            { text: "Le chiedi quanti esami le mancano", correct: false }
+                        ]
+                    },
+                    winText: "Lei si toglie le cuffie sorridendo: «Dimmi pure... VUOI ESSERE...?»"
+                },
+                {
+                    title: "EP. 6/6 • FLIPPER BAR MARANI",
+                    speaker: "BARISTA & AMICI",
+                    beats: [
+                        { who: "BARISTA & AMICI", text: "«Oh, sei il ragazzo di Paternò! Che ci offri per festeggiare il record al flipper?»" },
+                        { who: "CARLO", text: "«Cumpà, mo' ve fazzo vedè i' che aggia mparat' a Roma!»" },
+                        { who: "VOCE SITCOM", text: "Manca l'ultima parola per completare la frase e conquistare tutta la compagnia!" }
+                    ],
+                    dialectReply: "«A' prossima partita a' pag' i'!» (Tutti al bar aspettano la frase in italiano perfetto!)",
+                    quiz: {
+                        prompt: "Completa la frase finale davanti a tutti i tuoi nuovi compagni romani!",
+                        options: [
+                            { text: "Alzi la gazzosa e dici: «MIO AMICO?»", correct: true },
+                            { text: "Dici: «DOV'È LA STAZIONE?»", correct: false },
+                            { text: "Dici: «BUONANOTTE A TUTTI!»", correct: false }
+                        ]
+                    },
+                    winText: "OVAZIONE AL BAR MARANI! Hai completato tutta la frase!"
+                }
+            ];
+
+            /* =================================================================
+               2. STATO GLOBALE & ANTI-DOPPIO-TAP
+            ================================================================= */
+            const state = {
+                screen: "attract",
+                score: 0,
+                epIndex: 0,
+                beatIndex: 0,
+                phase: "dialog", // "dialog" | "actions" | "quiz" | "result"
+                unlockedCount: 0,
+                carloMood: "neutral",
+                npcMood: "neutral",
+                npcShiftX: 0,
+                tick: 0,
+                introStep: 0,
+                introTimer: null,
+                lastTapTime: 0
+            };
+
+            function guardTap(fn) {
+                return function (ev) {
+                    const now = Date.now();
+                    if (now - state.lastTapTime < 220) return;
+                    state.lastTapTime = now;
+                    try {
+                        fn(ev);
+                    } catch (err) {
+                        console.error(err);
+                    }
+                };
+            }
+
+            function bindFastTap(id, handler) {
+                const el = document.getElementById(id);
+                if (!el) return;
+                const wrapped = guardTap(handler);
+                el.addEventListener("pointerdown", function (e) {
+                    if (e.pointerType === "touch") {
+                        e.preventDefault();
+                        wrapped(e);
+                    }
+                }, { passive: false });
+            }
+
+            /* =================================================================
+               3. MOTORE AUDIO ANNI '80 (SIGLA + SOTTOFONDO + SFX)
+            ================================================================= */
+            const audio = {
+                ctx: null,
+                masterGain: null,
+                muted: false,
+                playing: false,
+                targetGain: 0.22,
+                stepTimer: null,
+                noteIndex: 0,
+                customWavActive: false
+            };
+
+            // Melodia chiptune allegra stile sitcom anni '80 ("Three's Company" vibe)
+            const THEME_NOTES = [
+                523.25, 659.25, 783.99, 659.25, 880.00, 783.99, 659.25, 587.33,
+                659.25, 783.99, 880.00, 1046.50, 880.00, 783.99, 659.25, 0,
+                587.33, 698.46, 880.00, 783.99, 698.46, 659.25, 587.33, 523.25,
+                587.33, 659.25, 783.99, 659.25, 523.25, 0, 523.25, 0
+            ];
+
+            function ensureAudioContext() {
+                try {
+                    if (!audio.ctx) {
+                        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                        if (!AudioCtx) return;
+                        audio.ctx = new AudioCtx();
+                        audio.masterGain = audio.ctx.createGain();
+                        audio.masterGain.gain.value = audio.muted ? 0 : audio.targetGain;
+                        audio.masterGain.connect(audio.ctx.destination);
+                    }
+                    if (audio.ctx.state === "suspended") {
+                        audio.ctx.resume();
+                    }
+                } catch (e) {}
+            }
+
+            function setMusicVolume(level) {
+                audio.targetGain = level;
+                try {
+                    const localEl = document.getElementById("localAudioEl");
+                    if (localEl) {
+                        localEl.volume = audio.muted ? 0 : Math.min(1, level * 3.2);
+                    }
+                    if (audio.masterGain && audio.ctx) {
+                        audio.masterGain.gain.setTargetAtTime(audio.muted ? 0 : level, audio.ctx.currentTime, 0.08);
+                    }
+                } catch (e) {}
+            }
+
+            function startChiptuneFallback() {
+                ensureAudioContext();
+                if (audio.playing || !audio.ctx) return;
+                audio.playing = true;
+                const badge = document.getElementById("wavBadge");
+                if (badge && !audio.customWavActive) badge.textContent = "8-BIT";
+                audio.stepTimer = setInterval(function () {
+                    if (audio.muted || audio.customWavActive || !audio.ctx || audio.ctx.state !== "running") return;
+                    try {
+                        const freq = THEME_NOTES[audio.noteIndex % THEME_NOTES.length];
+                        audio.noteIndex++;
+                        if (freq > 0) {
+                            const now = audio.ctx.currentTime;
+                            const osc = audio.ctx.createOscillator();
+                            const noteGain = audio.ctx.createGain();
+                            osc.type = "triangle";
+                            osc.frequency.setValueAtTime(freq, now);
+                            noteGain.gain.setValueAtTime(0.001, now);
+                            noteGain.gain.exponentialRampToValueAtTime(0.45, now + 0.02);
+                            noteGain.gain.exponentialRampToValueAtTime(0.001, now + 0.19);
+                            osc.connect(noteGain);
+                            noteGain.connect(audio.masterGain);
+                            osc.start(now);
+                            osc.stop(now + 0.21);
+                        }
+                    } catch (e) {}
+                }, 210);
+            }
+
+            function startSitcomTheme(volumeLevel) {
+                setMusicVolume(volumeLevel);
+                const localEl = document.getElementById("localAudioEl");
+                const badge = document.getElementById("wavBadge");
+
+                if (localEl) {
+                    try {
+                        localEl.volume = audio.muted ? 0 : Math.min(1, volumeLevel * 3.2);
+                        if (badge && !audio.customWavActive) badge.textContent = "CARICO...";
+                        const playPromise = localEl.play();
+                        if (playPromise && typeof playPromise.then === "function") {
+                            playPromise.then(function () {
+                                audio.customWavActive = true;
+                                if (badge) badge.textContent = "MP3 OK";
+                                if (audio.stepTimer) {
+                                    clearInterval(audio.stepTimer);
+                                    audio.stepTimer = null;
+                                }
+                                audio.playing = false;
+                            }).catch(function () {
+                                // Se il browser o la sandbox blocca il file esterno, passa al chiptune
+                                startChiptuneFallback();
+                            });
+                            return;
+                        }
+                    } catch (e) {}
+                }
+
+                startChiptuneFallback();
+            }
+
+            function playSfx(type) {
+                if (audio.muted) return;
+                ensureAudioContext();
+                if (!audio.ctx) return;
+                try {
+                    const now = audio.ctx.currentTime;
+                    const osc = audio.ctx.createOscillator();
+                    const g = audio.ctx.createGain();
+                    if (type === "coin") {
+                        osc.type = "square";
+                        osc.frequency.setValueAtTime(987.77, now);
+                        osc.frequency.setValueAtTime(1318.51, now + 0.08);
+                        g.gain.setValueAtTime(0.18, now);
+                        g.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
+                        osc.connect(g);
+                        g.connect(audio.ctx.destination);
+                        osc.start(now);
+                        osc.stop(now + 0.34);
+                    } else if (type === "win") {
+                        osc.type = "triangle";
+                        osc.frequency.setValueAtTime(523.25, now);
+                        osc.frequency.setValueAtTime(659.25, now + 0.09);
+                        osc.frequency.setValueAtTime(783.99, now + 0.18);
+                        osc.frequency.setValueAtTime(1046.50, now + 0.27);
+                        g.gain.setValueAtTime(0.22, now);
+                        g.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+                        osc.connect(g);
+                        g.connect(audio.ctx.destination);
+                        osc.start(now);
+                        osc.stop(now + 0.52);
+                    } else if (type === "boing") {
+                        osc.type = "sawtooth";
+                        osc.frequency.setValueAtTime(240, now);
+                        osc.frequency.exponentialRampToValueAtTime(110, now + 0.25);
+                        g.gain.setValueAtTime(0.16, now);
+                        g.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+                        osc.connect(g);
+                        g.connect(audio.ctx.destination);
+                        osc.start(now);
+                        osc.stop(now + 0.3);
+                    } else {
+                        osc.type = "square";
+                        osc.frequency.setValueAtTime(660, now);
+                        g.gain.setValueAtTime(0.12, now);
+                        g.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+                        osc.connect(g);
+                        g.connect(audio.ctx.destination);
+                        osc.start(now);
+                        osc.stop(now + 0.09);
+                    }
+                } catch (e) {}
+            }
+
+            function toggleMute() {
+                audio.muted = !audio.muted;
+                const btn = document.getElementById("btnMute");
+                if (btn) btn.textContent = audio.muted ? "MUTO" : "AUDIO";
+                setMusicVolume(audio.targetGain);
+            }
+
+            /* =================================================================
+               4. GESTIONE SCHERMATE & FLUSSO LINEARE
+            ================================================================= */
+            function showScreen(name) {
+                state.screen = name;
+                ["screenAttract", "screenIntro", "screenGame", "screenFinale"].forEach(function (id) {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.add("hidden");
+                });
+                const activeMap = {
+                    attract: "screenAttract",
+                    intro: "screenIntro",
+                    game: "screenGame",
+                    finale: "screenFinale"
+                };
+                const target = document.getElementById(activeMap[name]);
+                if (target) target.classList.remove("hidden");
+            }
+
+            function updateScore(pts) {
+                state.score += pts;
+                const el = document.getElementById("hudScore");
+                if (el) el.textContent = String(state.score).padStart(5, "0");
+            }
+
+            function startFromAttract() {
+                if (state.screen !== "attract") return;
+                playSfx("coin");
+                startSitcomTheme(0.24);
+                showScreen("intro");
+                state.introStep = 0;
+
+                const slides = [
+                    {
+                        sub: "UNA PRODUZIONE TELE-LUCANIA '86",
+                        head: "CON CARLO DA PATERNÒ... NELLA GIUNGLA DI ROMA!"
+                    },
+                    {
+                        sub: "MATRICOLA DI PSICOLOGIA • LA SAPIENZA",
+                        head: "PARLA SOLO DIALETTO LUCANO... MA HA UN GRANDE CUORE!"
+                    },
+                    {
+                        sub: "6 EPISODI • 6 PAROLE DA IMPARARE",
+                        head: "AIUTALO A FARE NUOVI AMICI NELLA CAPITALE!"
+                    }
+                ];
+
+                function renderIntroSlide() {
+                    const s = slides[state.introStep] || slides[0];
+                    document.getElementById("introSlideIndicator").textContent = (state.introStep + 1) + " / 3";
+                    document.getElementById("introSubtitle").textContent = s.sub;
+                    document.getElementById("introHeadline").textContent = s.head;
+                }
+
+                renderIntroSlide();
+                if (state.introTimer) clearInterval(state.introTimer);
+                state.introTimer = setInterval(function () {
+                    state.introStep++;
+                    if (state.introStep >= slides.length) {
+                        finishIntro();
+                    } else {
+                        renderIntroSlide();
+                    }
+                }, 2600);
+            }
+
+            function finishIntro() {
+                if (state.introTimer) {
+                    clearInterval(state.introTimer);
+                    state.introTimer = null;
+                }
+                playSfx("tap");
+                // Sigla in leggerissimo sottofondo durante la partita
+                setMusicVolume(0.055);
+                state.epIndex = 0;
+                state.unlockedCount = 0;
+                loadEpisode(0);
+                showScreen("game");
+            }
+
+            /* =================================================================
+               5. MOTORE EPISODI, SCENETTE LINEARI & MINI-ENIGMI
+            ================================================================= */
+            function renderPhraseGrid() {
+                const grid = document.getElementById("phraseGrid");
+                if (!grid) return;
+                grid.innerHTML = "";
+                PHRASE_PARTS.forEach(function (word, idx) {
+                    const tile = document.createElement("div");
+                    tile.className = "phrase-tile";
+                    if (idx < state.unlockedCount) {
+                        tile.classList.add("unlocked");
+                        tile.textContent = word;
+                    } else if (idx === state.epIndex) {
+                        tile.classList.add("active");
+                        tile.textContent = "???";
+                    } else {
+                        tile.textContent = "---";
+                    }
+                    grid.appendChild(tile);
+                });
+                document.getElementById("epWordsCount").textContent = "PAROLE: " + state.unlockedCount + "/6";
+            }
+
+            function setDialogMode(speaker, text, stepLabel, btnLabel) {
+                document.getElementById("boxDialog").classList.remove("hidden");
+                document.getElementById("boxActions").classList.add("hidden");
+                document.getElementById("boxQuiz").classList.add("hidden");
+
+                document.getElementById("speakerBadge").textContent = speaker;
+                document.getElementById("dialogText").textContent = text;
+                document.getElementById("beatStepBadge").textContent = stepLabel;
+                document.getElementById("btnDialogNext").textContent = btnLabel;
+            }
+
+            function loadEpisode(idx) {
+                state.epIndex = idx;
+                state.beatIndex = 0;
+                state.phase = "dialog";
+                state.carloMood = "neutral";
+                state.npcMood = "neutral";
+                state.npcShiftX = 0;
+
+                const ep = EPISODES[idx];
+                document.getElementById("epTitleLabel").textContent = ep.title;
+                document.getElementById("hudStage").textContent = "STAGE " + (idx + 1) + "-6";
+                renderPhraseGrid();
+                renderCurrentBeat();
+            }
+
+            function renderCurrentBeat() {
+                const ep = EPISODES[state.epIndex];
+                const beat = ep.beats[state.beatIndex];
+                state.carloMood = beat.who === "CARLO" ? "dialect" : "neutral";
+                state.npcMood = state.beatIndex > 0 ? "confused" : "neutral";
+                const isLastBeat = state.beatIndex === ep.beats.length - 1;
+                setDialogMode(
+                    beat.who,
+                    beat.text,
+                    (state.beatIndex + 1) + "/" + ep.beats.length,
+                    isLastBeat ? "SCEGLI AZIONE ▶" : "AVANTI ▶"
+                );
+            }
+
+            function advanceDialog() {
+                const ep = EPISODES[state.epIndex];
+                playSfx("tap");
+
+                if (state.phase === "dialog") {
+                    if (state.beatIndex < ep.beats.length - 1) {
+                        state.beatIndex++;
+                        renderCurrentBeat();
+                    } else {
+                        // Fine scenetta: rivela le azioni!
+                        state.phase = "actions";
+                        state.carloMood = "neutral";
+                        document.getElementById("boxDialog").classList.add("hidden");
+                        document.getElementById("boxActions").classList.remove("hidden");
+                        document.getElementById("boxQuiz").classList.add("hidden");
+                    }
+                } else if (state.phase === "dialect_reply") {
+                    // Torna alle azioni dopo la gag in dialetto
+                    state.phase = "actions";
+                    state.carloMood = "neutral";
+                    state.npcShiftX = 0;
+                    document.getElementById("boxDialog").classList.add("hidden");
+                    document.getElementById("boxActions").classList.remove("hidden");
+                } else if (state.phase === "result") {
+                    if (state.epIndex + 1 < EPISODES.length) {
+                        loadEpisode(state.epIndex + 1);
+                    } else {
+                        triggerFinale();
+                    }
+                }
+            }
+
+            function chooseDialect() {
+                const ep = EPISODES[state.epIndex];
+                playSfx("boing");
+                state.phase = "dialect_reply";
+                state.carloMood = "dialect";
+                state.npcMood = "confused";
+                state.npcShiftX = 24;
+                setDialogMode(
+                    "EFFETTO SITCOM • RISATE!",
+                    ep.dialectReply,
+                    "GAG",
+                    "RIPROVA CON L'INGEGNO ▶"
+                );
+            }
+
+            function chooseWit() {
+                const ep = EPISODES[state.epIndex];
+                playSfx("tap");
+                state.phase = "quiz";
+                state.carloMood = "neutral";
+                state.npcMood = "neutral";
+                state.npcShiftX = 0;
+
+                document.getElementById("boxDialog").classList.add("hidden");
+                document.getElementById("boxActions").classList.add("hidden");
+                document.getElementById("boxQuiz").classList.remove("hidden");
+
+                document.getElementById("quizPrompt").textContent = ep.quiz.prompt;
+                const optsBox = document.getElementById("quizOptions");
+                optsBox.innerHTML = "";
+
+                ep.quiz.options.forEach(function (opt) {
+                    const btn = document.createElement("button");
+                    btn.type = "button";
+                    btn.className = "btn-arcade btn-dark btn-quiz";
+                    btn.textContent = "▸ " + opt.text;
+                    const onPick = guardTap(function () {
+                        handleQuizAnswer(opt.correct, btn);
+                    });
+                    btn.onclick = onPick;
+                    btn.addEventListener("pointerdown", function (e) {
+                        if (e.pointerType === "touch") {
+                            e.preventDefault();
+                            onPick(e);
+                        }
+                    }, { passive: false });
+                    optsBox.appendChild(btn);
+                });
+            }
+
+            function handleQuizAnswer(isCorrect, btnEl) {
+                if (isCorrect) {
+                    playSfx("win");
+                    updateScore(1000);
+                    state.unlockedCount = state.epIndex + 1;
+                    state.phase = "result";
+                    state.carloMood = "happy";
+                    state.npcMood = "happy";
+                    renderPhraseGrid();
+
+                    const ep = EPISODES[state.epIndex];
+                    const unlockedWord = PHRASE_PARTS[state.epIndex];
+                    setDialogMode(
+                        "PAROLA SBLOCCATA: «" + unlockedWord.toUpperCase() + "»",
+                        ep.winText,
+                        "OK!",
+                        state.epIndex + 1 < EPISODES.length ? "PROSSIMO EPISODIO ▶" : "GRAN FINALE ★"
+                    );
+                } else {
+                    playSfx("boing");
+                    btnEl.style.borderColor = "#ff2a85";
+                    btnEl.style.color = "#ff2a85";
+                    btnEl.textContent = "✖ Non ha funzionato! Riprova...";
+                }
+            }
+
+            function triggerFinale() {
+                playSfx("win");
+                updateScore(5000);
+                setMusicVolume(0.24);
+                document.getElementById("hudStage").textContent = "FINALE '86";
+                showScreen("finale");
+            }
+
+            function resetGame() {
+                playSfx("coin");
+                state.score = 0;
+                updateScore(0);
+                state.epIndex = 0;
+                state.unlockedCount = 0;
+                setMusicVolume(0.055);
+                loadEpisode(0);
+                showScreen("game");
+            }
+
+            /* =================================================================
+               6. MOTORE GRAFICO VETTORIALE HD SU CANVAS (CARTOON ANNI '80)
+            ================================================================= */
+            function setupHDCanvas(canvas) {
+                const rectBounds = canvas.getBoundingClientRect();
+                const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+                const logicalW = 360;
+                const aspect = rectBounds.height > 0 && rectBounds.width > 0
+                    ? rectBounds.height / rectBounds.width
+                    : 0.56;
+                const logicalH = Math.max(180, Math.round(logicalW * aspect));
+
+                const targetW = Math.round(logicalW * dpr);
+                const targetH = Math.round(logicalH * dpr);
+                if (canvas.width !== targetW || canvas.height !== targetH) {
+                    canvas.width = targetW;
+                    canvas.height = targetH;
+                }
+                const ctx = canvas.getContext("2d");
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                ctx.lineJoin = "round";
+                ctx.lineCap = "round";
+                return { ctx: ctx, w: logicalW, h: logicalH };
+            }
+
+            function roundBox(ctx, x, y, w, h, r, fill, stroke, lineW) {
+                ctx.beginPath();
+                ctx.roundRect(x, y, w, h, r);
+                if (fill) {
+                    ctx.fillStyle = fill;
+                    ctx.fill();
+                }
+                if (stroke) {
+                    ctx.lineWidth = lineW || 2;
+                    ctx.strokeStyle = stroke;
+                    ctx.stroke();
+                }
+            }
+
+            function drawSpeechIcon(ctx, x, y, text, bgColor, textColor, tick) {
+                const floatY = Math.sin(tick * 0.14) * 3;
+                ctx.save();
+                ctx.translate(x, y + floatY);
+                roundBox(ctx, -20, -16, 40, 26, 10, bgColor, "#14162b", 2.5);
+                ctx.beginPath();
+                ctx.moveTo(-6, 10);
+                ctx.lineTo(0, 17);
+                ctx.lineTo(6, 10);
+                ctx.closePath();
+                ctx.fillStyle = bgColor;
+                ctx.fill();
+                ctx.strokeStyle = "#14162b";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.fillStyle = textColor;
+                ctx.font = "900 13px 'Trebuchet MS', sans-serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText(text, 0, -2);
+                ctx.restore();
+            }
+
+            function drawCarloHD(ctx, x, y, mood, tick, hasSuitcase) {
+                const isDialect = mood === "dialect";
+                const isHappy = mood === "happy";
+                const bob = isHappy ? -Math.abs(Math.sin(tick * 0.22)) * 7 : Math.sin(tick * 0.1) * 2;
+                const sway = isDialect ? Math.sin(tick * 0.35) * 2.5 : 0;
+
+                ctx.save();
+                ctx.translate(x + sway, y);
+
+                // Ombra morbida a terra
+                ctx.fillStyle = "rgba(8, 10, 28, 0.38)";
+                ctx.beginPath();
+                ctx.ellipse(0, 74, 24, 6, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Valigia di cartone legata con lo spago
+                if (hasSuitcase) {
+                    ctx.save();
+                    ctx.translate(34, 48 + bob * 0.4);
+                    roundBox(ctx, -16, -12, 32, 24, 5, "#c97a38", "#3b1f0b", 2.2);
+                    // Spago incrociato
+                    ctx.strokeStyle = "#fef08a";
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(-6, -12);
+                    ctx.lineTo(-6, 12);
+                    ctx.moveTo(6, -12);
+                    ctx.lineTo(6, 12);
+                    ctx.moveTo(-16, 0);
+                    ctx.lineTo(16, 0);
+                    ctx.stroke();
+                    // Maniglia
+                    roundBox(ctx, -6, -17, 12, 6, 3, "none", "#3b1f0b", 2.2);
+                    // Etichetta Paternò
+                    roundBox(ctx, 2, -8, 10, 7, 2, "#ff2a85", "#fff", 1);
+                    ctx.restore();
+                }
+
+                ctx.translate(0, bob);
+
+                // Gambe (Jeans anni '80 con risvolto) e sneakers bianche
+                roundBox(ctx, -13, 44, 11, 24, 4, "#2563eb", "#14162b", 2.2);
+                roundBox(ctx, 2, 44, 11, 24, 4, "#2563eb", "#14162b", 2.2);
+                // Risvolti jeans
+                roundBox(ctx, -13, 62, 11, 4, 2, "#93c5fd", "#14162b", 1.5);
+                roundBox(ctx, 2, 62, 11, 4, 2, "#93c5fd", "#14162b", 1.5);
+                // Sneakers anni '80
+                roundBox(ctx, -16, 65, 15, 8, 4, "#ffffff", "#14162b", 2);
+                roundBox(ctx, 1, 65, 15, 8, 4, "#ffffff", "#14162b", 2);
+
+                // Braccia animate
+                ctx.save();
+                ctx.translate(-15, 22);
+                ctx.rotate(isHappy ? -0.9 : (isDialect ? Math.sin(tick * 0.3) * 0.35 - 0.3 : 0.15));
+                roundBox(ctx, -4, 0, 8, 22, 4, "#e86f3a", "#14162b", 2);
+                ctx.fillStyle = "#fed7aa";
+                ctx.beginPath();
+                ctx.arc(0, 23, 4.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                ctx.restore();
+
+                ctx.save();
+                ctx.translate(15, 22);
+                ctx.rotate(isHappy ? 0.9 : (isDialect ? -Math.cos(tick * 0.3) * 0.35 + 0.3 : -0.15));
+                roundBox(ctx, -4, 0, 8, 22, 4, "#e86f3a", "#14162b", 2);
+                ctx.fillStyle = "#fed7aa";
+                ctx.beginPath();
+                ctx.arc(0, 23, 4.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                ctx.restore();
+
+                // Maglione vintage anni '80 a righe calde
+                roundBox(ctx, -16, 17, 32, 30, 8, "#e86f3a", "#14162b", 2.4);
+                // Righe orizzontali retro
+                ctx.fillStyle = "#ffd166";
+                ctx.fillRect(-14, 24, 28, 5);
+                ctx.fillStyle = "#9f1239";
+                ctx.fillRect(-14, 32, 28, 4);
+                // Colletto camicia
+                ctx.fillStyle = "#ffffff";
+                ctx.beginPath();
+                ctx.moveTo(-6, 17);
+                ctx.lineTo(0, 23);
+                ctx.lineTo(6, 17);
+                ctx.closePath();
+                ctx.fill();
+
+                // Testa arrotondata espressiva
+                ctx.fillStyle = "#fed7aa";
+                ctx.strokeStyle = "#14162b";
+                ctx.lineWidth = 2.4;
+                ctx.beginPath();
+                ctx.arc(0, 2, 16, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                // Guance rosate
+                ctx.fillStyle = "rgba(244, 63, 94, 0.35)";
+                ctx.beginPath();
+                ctx.arc(-9, 5, 3.5, 0, Math.PI * 2);
+                ctx.arc(9, 5, 3.5, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Ciuffo ribelle anni '80
+                ctx.fillStyle = "#291d18";
+                ctx.beginPath();
+                ctx.moveTo(-16, 0);
+                ctx.quadraticCurveTo(-18, -18, 0, -17);
+                ctx.quadraticCurveTo(14, -22, 18, -10);
+                ctx.quadraticCurveTo(10, -11, 6, -7);
+                ctx.quadraticCurveTo(-2, -13, -12, -5);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                // Occhi espressivi
+                ctx.fillStyle = "#ffffff";
+                ctx.beginPath();
+                ctx.ellipse(-5.5, 0, 3.6, 4.4, 0, 0, Math.PI * 2);
+                ctx.ellipse(5.5, 0, 3.6, 4.4, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.lineWidth = 1.6;
+                ctx.stroke();
+
+                ctx.fillStyle = "#14162b";
+                ctx.beginPath();
+                ctx.arc(-5, 0, 1.8, 0, Math.PI * 2);
+                ctx.arc(6, 0, 1.8, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Sopracciglia e bocca in base allo stato d'animo
+                ctx.lineWidth = 2;
+                if (isDialect) {
+                    // Sopracciglia aggrottate + bocca aperta che parla dialetto
+                    ctx.beginPath();
+                    ctx.moveTo(-9, -6);
+                    ctx.lineTo(-3, -4);
+                    ctx.moveTo(9, -6);
+                    ctx.lineTo(3, -4);
+                    ctx.stroke();
+
+                    ctx.fillStyle = "#be123c";
+                    ctx.beginPath();
+                    ctx.ellipse(0, 9, 4.5, 3.5, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                } else if (isHappy) {
+                    // Sorriso smagliante
+                    ctx.beginPath();
+                    ctx.arc(-5.5, -5, 4, Math.PI, 0);
+                    ctx.arc(5.5, -5, 4, Math.PI, 0);
+                    ctx.stroke();
+
+                    ctx.fillStyle = "#ffffff";
+                    ctx.beginPath();
+                    ctx.arc(0, 7, 6.5, 0, Math.PI);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+                } else {
+                    // Sorriso timido e curioso
+                    ctx.beginPath();
+                    ctx.arc(0, 7, 5, 0.15 * Math.PI, 0.85 * Math.PI);
+                    ctx.stroke();
+                }
+
+                // Fumetto reazione sopra la testa
+                if (isDialect) {
+                    drawSpeechIcon(ctx, 24, -24, "?!", "#ffd166", "#14162b", tick);
+                } else if (isHappy) {
+                    drawSpeechIcon(ctx, 24, -24, "★!", "#00f5d4", "#14162b", tick);
+                }
+
+                ctx.restore();
+            }
+
+            function drawRomanCharacterHD(ctx, x, y, epIndex, mood, tick) {
+                const isHappy = mood === "happy";
+                const isConfused = mood === "confused";
+                const bounce = isHappy ? -Math.abs(Math.sin(tick * 0.25)) * 8 : Math.sin(tick * 0.09 + 1.5) * 1.8;
+                const tilt = isConfused ? Math.sin(tick * 0.25) * 0.08 : 0;
+
+                ctx.save();
+                ctx.translate(x, y);
+
+                // Ombra
+                ctx.fillStyle = "rgba(8, 10, 28, 0.38)";
+                ctx.beginPath();
+                ctx.ellipse(0, 74, 24, 6, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.translate(0, bounce);
+                ctx.rotate(tilt);
+
+                // Palette e stile per ciascuno dei 6 personaggi romani
+                const profiles = [
+                    { suit: "#0284c7", pants: "#1e293b", skin: "#fed7aa", hair: "#334155", role: "taxi" },
+                    { suit: "#a855f7", pants: "#4c1d95", skin: "#fde68a", hair: "#78350f", role: "clerk" },
+                    { suit: "#1d4ed8", pants: "#172554", skin: "#fed7aa", hair: "#1e293b", role: "atac" },
+                    { suit: "#92400e", pants: "#451a03", skin: "#fde68a", hair: "#e2e8f0", role: "prof" },
+                    { suit: "#ec4899", pants: "#0284c7", skin: "#fed7aa", hair: "#451a03", role: "student" },
+                    { suit: "#059669", pants: "#111827", skin: "#fed7aa", hair: "#1f2937", role: "barman" }
+                ];
+                const p = profiles[epIndex] || profiles[0];
+
+                // Gambe e scarpe
+                roundBox(ctx, -12, 44, 10, 24, 4, p.pants, "#14162b", 2.2);
+                roundBox(ctx, 2, 44, 10, 24, 4, p.pants, "#14162b", 2.2);
+                roundBox(ctx, -14, 65, 13, 8, 4, "#1e293b", "#14162b", 2);
+                roundBox(ctx, 1, 65, 13, 8, 4, "#1e293b", "#14162b", 2);
+
+                // Braccia
+                roundBox(ctx, -19, 21, 7, 22, 3.5, p.suit, "#14162b", 2);
+                roundBox(ctx, 12, 21, 7, 22, 3.5, p.suit, "#14162b", 2);
+
+                // Busto e abbigliamento specifico
+                roundBox(ctx, -15, 17, 30, 30, 8, p.suit, "#14162b", 2.4);
+
+                if (p.role === "taxi") {
+                    // Camicia azzurra con cravatta gialla
+                    ctx.fillStyle = "#ffd166";
+                    ctx.beginPath();
+                    ctx.moveTo(-3, 18);
+                    ctx.lineTo(3, 18);
+                    ctx.lineTo(0, 34);
+                    ctx.closePath();
+                    ctx.fill();
+                } else if (p.role === "clerk") {
+                    // Collana di perle anni '80
+                    ctx.fillStyle = "#ffffff";
+                    for (let px = -8; px <= 8; px += 4) {
+                        ctx.beginPath();
+                        ctx.arc(px, 23 + Math.abs(px) * 0.25, 2, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                } else if (p.role === "atac") {
+                    // Bottoni dorati divisa ATAC
+                    ctx.fillStyle = "#ffd166";
+                    ctx.beginPath();
+                    ctx.arc(0, 25, 2.2, 0, Math.PI * 2);
+                    ctx.arc(0, 34, 2.2, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (p.role === "prof") {
+                    // Gilet e papillon
+                    roundBox(ctx, -7, 18, 14, 25, 3, "#fef3c7", "#14162b", 1.5);
+                    ctx.fillStyle = "#dc2626";
+                    ctx.beginPath();
+                    ctx.moveTo(-5, 18);
+                    ctx.lineTo(5, 22);
+                    ctx.lineTo(5, 18);
+                    ctx.lineTo(-5, 22);
+                    ctx.closePath();
+                    ctx.fill();
+                } else if (p.role === "student") {
+                    // Walkman giallo alla cintura!
+                    roundBox(ctx, 10, 36, 9, 12, 2, "#ffd166", "#14162b", 1.8);
+                } else if (p.role === "barman") {
+                    // Grembiule bianco da bar
+                    roundBox(ctx, -11, 24, 22, 23, 3, "#ffffff", "#14162b", 1.8);
+                }
+
+                // Testa
+                ctx.fillStyle = p.skin;
+                ctx.strokeStyle = "#14162b";
+                ctx.lineWidth = 2.4;
+                ctx.beginPath();
+                ctx.arc(0, 2, 15.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                // Acconciature e accessori distintivi
+                if (p.role === "taxi") {
+                    // Coppola/berretto da tassista
+                    roundBox(ctx, -15, -14, 30, 8, 4, "#1e293b", "#14162b", 2);
+                    roundBox(ctx, -18, -8, 22, 4, 2, "#0f172a", "#14162b", 1.5);
+                    // Baffoni
+                    roundBox(ctx, -8, 6, 16, 4, 2, "#334155", "none");
+                } else if (p.role === "clerk") {
+                    // Permanente voluminosa anni '80 + occhialoni
+                    ctx.fillStyle = p.hair;
+                    ctx.beginPath();
+                    ctx.arc(-12, -6, 8, 0, Math.PI * 2);
+                    ctx.arc(0, -12, 10, 0, Math.PI * 2);
+                    ctx.arc(12, -6, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                    // Occhialoni rosa anni '80
+                    roundBox(ctx, -12, -3, 10, 8, 3, "rgba(255,255,255,0.5)", "#ff2a85", 2);
+                    roundBox(ctx, 2, -3, 10, 8, 3, "rgba(255,255,255,0.5)", "#ff2a85", 2);
+                } else if (p.role === "atac") {
+                    // Cappello ufficiale ATAC con visiera e stemma oro
+                    roundBox(ctx, -16, -16, 32, 9, 3, "#172554", "#14162b", 2);
+                    roundBox(ctx, -15, -8, 24, 4, 2, "#000000", "#14162b", 1.5);
+                    ctx.fillStyle = "#ffd166";
+                    ctx.beginPath();
+                    ctx.arc(0, -12, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (p.role === "prof") {
+                    // Capelli bianchi ai lati e barba curata
+                    ctx.fillStyle = "#e2e8f0";
+                    ctx.beginPath();
+                    ctx.arc(-14, -4, 6, 0, Math.PI * 2);
+                    ctx.arc(14, -4, 6, 0, Math.PI * 2);
+                    ctx.fill();
+                    roundBox(ctx, -10, 7, 20, 9, 4, "#e2e8f0", "#14162b", 1.8);
+                } else if (p.role === "student") {
+                    // Coda alta + cuffie arancioni del walkman
+                    ctx.fillStyle = p.hair;
+                    ctx.beginPath();
+                    ctx.arc(0, -4, 15, Math.PI, 0);
+                    ctx.fill();
+                    roundBox(ctx, -18, -5, 5, 11, 2, "#fb923c", "#14162b", 1.8);
+                    roundBox(ctx, 13, -5, 5, 11, 2, "#fb923c", "#14162b", 1.8);
+                } else if (p.role === "barman") {
+                    // Ciuffo lucido e baffi a manubrio
+                    ctx.fillStyle = p.hair;
+                    ctx.beginPath();
+                    ctx.arc(0, -5, 15, Math.PI, 0);
+                    ctx.fill();
+                    roundBox(ctx, -9, 6, 18, 4, 2, "#1f2937", "none");
+                }
+
+                // Occhi
+                ctx.fillStyle = "#14162b";
+                ctx.beginPath();
+                ctx.arc(-5, 1, 2.2, 0, Math.PI * 2);
+                ctx.arc(5, 1, 2.2, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Bocca
+                ctx.lineWidth = 2;
+                if (isConfused) {
+                    ctx.beginPath();
+                    ctx.moveTo(-5, 10);
+                    ctx.quadraticCurveTo(0, 7, 5, 11);
+                    ctx.stroke();
+                    drawSpeechIcon(ctx, -22, -24, "?", "#ff2a85", "#ffffff", tick);
+                } else if (isHappy) {
+                    ctx.fillStyle = "#ffffff";
+                    ctx.beginPath();
+                    ctx.arc(0, 8, 6, 0, Math.PI);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(0, 9, 4, 0.1 * Math.PI, 0.9 * Math.PI);
+                    ctx.stroke();
+                }
+
+                ctx.restore();
+            }
+
+            function drawSunsetSky(ctx, w, h) {
+                const skyGrad = ctx.createLinearGradient(0, 0, 0, h * 0.72);
+                skyGrad.addColorStop(0, "#14123b");
+                skyGrad.addColorStop(0.5, "#4c1d6e");
+                skyGrad.addColorStop(1, "#e86f3a");
+                ctx.fillStyle = skyGrad;
+                ctx.fillRect(0, 0, w, h);
+
+                // Sole anni '80 con bande retro
+                ctx.save();
+                ctx.fillStyle = "#ffd166";
+                ctx.beginPath();
+                ctx.arc(w * 0.5, h * 0.54, 46, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = "#9d2b6b";
+                ctx.fillRect(w * 0.5 - 50, h * 0.57, 100, 3);
+                ctx.fillRect(w * 0.5 - 50, h * 0.63, 100, 4);
+                ctx.restore();
+            }
+
+            function drawStageBackgroundHD(ctx, w, h, epIndex, tick) {
+                const floorY = Math.round(h * 0.72);
+
+                if (epIndex === 0) {
+                    // EP 1: Stazione Termini (pensilina ad archi e tabellone partenze)
+                    drawSunsetSky(ctx, w, h);
+                    roundBox(ctx, 18, 22, w - 36, floorY - 22, 12, "rgba(24, 29, 69, 0.85)", "#00f5d4", 2.5);
+                    // Archi della pensilina
+                    ctx.strokeStyle = "#38bdf8";
+                    ctx.lineWidth = 3;
+                    for (let ax = 36; ax < w - 50; ax += 64) {
+                        ctx.beginPath();
+                        ctx.arc(ax + 26, 62, 26, Math.PI, 0);
+                        ctx.stroke();
+                    }
+                    // Tabellone giallo partenze
+                    roundBox(ctx, w * 0.5 - 58, 30, 116, 28, 6, "#090b1f", "#ffd166", 2);
+                    ctx.fillStyle = "#ffd166";
+                    ctx.font = "bold 10px monospace";
+                    ctx.textAlign = "center";
+                    ctx.fillText("ROMA TERMINI • 1986", w * 0.5, 47);
+                } else if (epIndex === 1) {
+                    // EP 2: Segreteria La Sapienza (colonnato razionalista)
+                    ctx.fillStyle = "#1e1b4b";
+                    ctx.fillRect(0, 0, w, floorY);
+                    roundBox(ctx, 20, 16, w - 40, floorY - 16, 6, "#fef3c7", "#b45309", 2.5);
+                    // Colonne travertino
+                    for (let cx = 36; cx < w - 45; cx += 56) {
+                        roundBox(ctx, cx, 38, 16, floorY - 38, 2, "#fde68a", "#92400e", 1.8);
+                    }
+                    roundBox(ctx, 20, 16, w - 40, 24, 4, "#9f1239", "#ffd166", 2);
+                    ctx.fillStyle = "#ffd166";
+                    ctx.font = "bold 10px sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.fillText("UNIVERSITÀ LA SAPIENZA • PSICOLOGIA", w * 0.5, 32);
+                } else if (epIndex === 2) {
+                    // EP 3: Fermata Autobus 492 con autobus ATAC arancione
+                    drawSunsetSky(ctx, w, h);
+                    // Palina ATAC
+                    ctx.fillStyle = "#cbd5e1";
+                    ctx.fillRect(42, 34, 5, floorY - 34);
+                    roundBox(ctx, 28, 24, 34, 22, 4, "#ffffff", "#dc2626", 2.5);
+                    ctx.fillStyle = "#dc2626";
+                    ctx.font = "900 11px sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.fillText("492", 45, 39);
+
+                    // Autobus ATAC arancione anni '80 sullo sfondo
+                    const busOffset = Math.sin(tick * 0.05) * 3;
+                    roundBox(ctx, 110, 46 + busOffset, 210, floorY - 52, 12, "#ea580c", "#14162b", 2.5);
+                    for (let wx = 124; wx < 285; wx += 42) {
+                        roundBox(ctx, wx, 56 + busOffset, 34, 24, 4, "#bae6fd", "#14162b", 2);
+                    }
+                    ctx.fillStyle = "#14162b";
+                    ctx.beginPath();
+                    ctx.arc(150, floorY - 4, 13, 0, Math.PI * 2);
+                    ctx.arc(280, floorY - 4, 13, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (epIndex === 3) {
+                    // EP 4: Aula Magna Psicologia
+                    ctx.fillStyle = "#291d18";
+                    ctx.fillRect(0, 0, w, floorY);
+                    roundBox(ctx, 34, 20, w - 68, floorY - 36, 8, "#064e3b", "#d97706", 3.5);
+                    ctx.fillStyle = "#fef08a";
+                    ctx.font = "bold 11px 'Trebuchet MS', sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.fillText("PSICOLOGIA GENERALE • PROF. ROSSI", w * 0.5, 44);
+                    ctx.strokeStyle = "rgba(255,255,255,0.45)";
+                    ctx.lineWidth = 1.8;
+                    ctx.beginPath();
+                    ctx.arc(w * 0.5, 74, 16, 0, Math.PI * 2);
+                    ctx.stroke();
+                } else if (epIndex === 4) {
+                    // EP 5: Biblioteca San Lorenzo
+                    ctx.fillStyle = "#1e1633";
+                    ctx.fillRect(0, 0, w, floorY);
+                    const bookColors = ["#ff2a85", "#00f5d4", "#ffd166", "#38bdf8", "#fb923c"];
+                    for (let row = 0; row < 2; row++) {
+                        const sy = 26 + row * 44;
+                        roundBox(ctx, 22, sy, w - 44, 36, 4, "#312352", "#6d28d9", 2);
+                        for (let bx = 32; bx < w - 46; bx += 18) {
+                            const col = bookColors[(bx + row) % bookColors.length];
+                            roundBox(ctx, bx, sy + 6, 12, 26, 2, col, "#14162b", 1.5);
+                        }
+                    }
+                } else {
+                    // EP 6: Bar Marani - Flipper & Neon anni '80
+                    ctx.fillStyle = "#140c2e";
+                    ctx.fillRect(0, 0, w, floorY);
+                    // Insegna Neon BAR MARANI
+                    roundBox(ctx, w * 0.5 - 78, 16, 156, 28, 12, "#090b1f", "#ff2a85", 2.5);
+                    ctx.fillStyle = "#00f5d4";
+                    ctx.font = "900 12px sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.fillText("★ BAR MARANI '86 ★", w * 0.5, 34);
+                    // Flipper anni '80 al centro
+                    roundBox(ctx, w * 0.5 - 26, 48, 52, floorY - 48, 6, "#be185d", "#ffd166", 2.2);
+                    roundBox(ctx, w * 0.5 - 20, 54, 40, 22, 4, "#ffd166", "#14162b", 1.8);
+                }
+
+                // Pavimento/Strada con linea neon
+                const floorGrad = ctx.createLinearGradient(0, floorY, 0, h);
+                floorGrad.addColorStop(0, "#10132e");
+                floorGrad.addColorStop(1, "#060714");
+                ctx.fillStyle = floorGrad;
+                ctx.fillRect(0, floorY, w, h - floorY);
+
+                ctx.strokeStyle = "#00f5d4";
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(0, floorY);
+                ctx.lineTo(w, floorY);
+                ctx.stroke();
+
+                return floorY;
+            }
+
+            function renderLoop() {
+                state.tick++;
+                const t = state.tick;
+
+                if (state.screen === "attract") {
+                    const c = document.getElementById("canvasAttract");
+                    if (c) {
+                        const view = setupHDCanvas(c);
+                        const ctx = view.ctx, w = view.w, h = view.h;
+                        const floorY = Math.round(h * 0.72);
+                        drawSunsetSky(ctx, w, h);
+
+                        // Colosseo stilizzato HD sullo sfondo
+                        roundBox(ctx, w - 125, floorY - 58, 102, 58, 8, "#1e1b4b", "#ffd166", 2);
+                        for (let ax = w - 114; ax < w - 34; ax += 20) {
+                            roundBox(ctx, ax, floorY - 46, 11, 16, 5, "#ffd166", "none");
+                            roundBox(ctx, ax, floorY - 22, 11, 16, 5, "#ff2a85", "none");
+                        }
+
+                        // Pavimento
+                        ctx.fillStyle = "#060714";
+                        ctx.fillRect(0, floorY, w, h - floorY);
+                        ctx.strokeStyle = "#00f5d4";
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.moveTo(0, floorY);
+                        ctx.lineTo(w, floorY);
+                        ctx.stroke();
+
+                        // Autobus 492 che sfreccia sullo sfondo
+                        const busX = ((t * 1.5) % (w + 140)) - 110;
+                        roundBox(ctx, busX, floorY - 36, 86, 32, 8, "#ea580c", "#14162b", 2);
+                        roundBox(ctx, busX + 8, floorY - 30, 70, 12, 3, "#bae6fd", "#14162b", 1.5);
+
+                        drawCarloHD(ctx, 96, floorY - 72, "happy", t, true);
+                    }
+                } else if (state.screen === "intro") {
+                    const c = document.getElementById("canvasIntro");
+                    if (c) {
+                        const view = setupHDCanvas(c);
+                        const ctx = view.ctx, w = view.w, h = view.h;
+                        const floorY = drawStageBackgroundHD(ctx, w, h, 0, t);
+                        const walkX = w * 0.42 + Math.sin(t * 0.04) * 48;
+                        drawCarloHD(ctx, walkX, floorY - 72, "happy", t, true);
+                    }
+                } else if (state.screen === "game") {
+                    const c = document.getElementById("canvasStage");
+                    if (c) {
+                        const view = setupHDCanvas(c);
+                        const ctx = view.ctx, w = view.w, h = view.h;
+                        const floorY = drawStageBackgroundHD(ctx, w, h, state.epIndex, t);
+
+                        drawCarloHD(ctx, 84, floorY - 72, state.carloMood, t, state.epIndex === 0);
+                        drawRomanCharacterHD(ctx, 250 + state.npcShiftX, floorY - 72, state.epIndex, state.npcMood, t);
+                    }
+                } else if (state.screen === "finale") {
+                    const c = document.getElementById("canvasFinale");
+                    if (c) {
+                        const view = setupHDCanvas(c);
+                        const ctx = view.ctx, w = view.w, h = view.h;
+                        const floorY = drawStageBackgroundHD(ctx, w, h, 5, t);
+
+                        drawRomanCharacterHD(ctx, 74, floorY - 72, 4, "happy", t);
+                        drawCarloHD(ctx, w * 0.5, floorY - 74, "happy", t, false);
+                        drawRomanCharacterHD(ctx, w - 74, floorY - 72, 5, "happy", t + 10);
+                    }
+                }
+
+                requestAnimationFrame(renderLoop);
+            }
+
+            /* =================================================================
+               7. INIZIALIZZAZIONE IMMEDIATA A FINE BODY
+            ================================================================= */
+            window.app = {
+                startFromAttract: guardTap(startFromAttract),
+                finishIntro: guardTap(finishIntro),
+                advanceDialog: guardTap(advanceDialog),
+                chooseDialect: guardTap(chooseDialect),
+                chooseWit: guardTap(chooseWit),
+                resetGame: guardTap(resetGame),
+                toggleMute: guardTap(toggleMute)
+            };
+
+            bindFastTap("screenAttract", startFromAttract);
+            bindFastTap("btnInsertCoin", startFromAttract);
+            bindFastTap("btnSkipIntro", finishIntro);
+            bindFastTap("boxDialog", advanceDialog);
+            bindFastTap("btnDialogNext", advanceDialog);
+            bindFastTap("btnDialect", chooseDialect);
+            bindFastTap("btnWit", chooseWit);
+            bindFastTap("btnPlayAgain", resetGame);
+            bindFastTap("btnMute", toggleMute);
+
+            // Upload opzionale file WAV/MP3 locale
+            const wavInput = document.getElementById("wavUploadInput");
+            if (wavInput) {
+                wavInput.addEventListener("change", function (ev) {
+                    try {
+                        const file = ev.target.files && ev.target.files[0];
+                        if (!file) return;
+                        const url = URL.createObjectURL(file);
+                        const localEl = document.getElementById("localAudioEl");
+                        localEl.src = url;
+                        audio.customWavActive = true;
+                        document.getElementById("wavBadge").textContent = "OK";
+                        if (audio.stepTimer) clearInterval(audio.stepTimer);
+                        audio.playing = false;
+                        startSitcomTheme(audio.targetGain);
+                    } catch (e) {}
+                });
+            }
+
+            requestAnimationFrame(renderLoop);
+        })();
+    </script>
+</body>
+</html>
